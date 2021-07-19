@@ -30,8 +30,6 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<User>> getAllUsers() => select(users).get();
 
-  Stream<List<User>> watchAllUsers() => select(users).watch();
-
   // Add user
   Future insertUser(User user) => into(users).insert(user);
 

@@ -8,7 +8,3 @@ abstract class FetchDataEvent {
 class GetUserListEvent extends FetchDataEvent {
   const GetUserListEvent();
 }
-
-class SearchUserListEvent extends FetchDataEvent {
-  const SearchUserListEvent();
-}
