@@ -16,6 +16,10 @@ Future<List<User>> fetchUser() async {
   return await locator<AppDatabase>().getAllUsers();
 }
 
+Stream<List<User>> watchUsers() {
+  return locator<AppDatabase>().watchAllUsers();
+}
+
 Future<int> deleteUser(User user) async {
   return await locator<AppDatabase>().deleteUser(user);
 }

@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moordemo/bloc/bloc.dart';
-import 'package:moordemo/bloc/event.dart';
-import 'package:moordemo/bloc/state.dart';
 import 'package:moordemo/data_provider/database_manager.dart';
 import 'package:moordemo/data_provider/db_helper.dart';
 
@@ -16,16 +12,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _userBloc = GetUserListBloc();
-
   @override
   void initState() {
     super.initState();
-    _userBloc.add(GetUserListEvent());
-
-    shouldRefreshList.stream.listen((event) {
-      _userBloc.add(GetUserListEvent());
-    });
   }
 
   @override
@@ -59,75 +48,69 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: BlocBuilder(
-          bloc: _userBloc,
-          builder: (context, FetchDataState state) {
-            if (state is GetUserCompletedState) {
-              return userListView(state.userList);
-            } else if (state is GetUserLoadingState) {
-              return CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              );
-            } else {
-              return Container();
-            }
-          }),
+      body: userListView(),
     );
   }
 
-  Widget userListView(List<User> userList) {
-    return ListView.builder(
-      itemCount: userList.length ?? 0,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Container(
-            child: Row(
-              children: [
-                Flexible(
-                  flex: 4,
-                  child: ListTile(
-                    contentPadding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                    title: Text(
-                      userList[index].username ?? '',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                    subtitle: Text(
-                      userList[index].mail ?? '',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailsPage(
-                            user: userList[index],
-                          ),
+  Widget userListView() {
+    return StreamBuilder(
+        stream: watchUsers(),
+        builder: (context, AsyncSnapshot<List<User>> snapshot) {
+          return (snapshot.data != null && snapshot.data.length > 0)
+              ? ListView.builder(
+                  itemCount: snapshot.data.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 4,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                                title: Text(
+                                  snapshot.data[index].username ?? '',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  snapshot.data[index].mail ?? '',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailsPage(
+                                        user: snapshot.data[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Flexible(
+                              flex: 1,
+                              child: GestureDetector(
+                                  child: Text('Delete'),
+                                  onTap: () async {
+                                    await deleteUser(snapshot.data[index]);
+                                    shouldRefreshList.sink.add(true);
+                                  }),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: GestureDetector(
-                      child: Text('Delete'),
-                      onTap: () async {
-                        await deleteUser(userList[index]);
-                        shouldRefreshList.sink.add(true);
-                      }),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+                      ),
+                    );
+                  },
+                )
+              : Center(child: Text('No User found'));
+        });
   }
 }

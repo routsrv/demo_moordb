@@ -28,7 +28,11 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  // Get user
   Future<List<User>> getAllUsers() => select(users).get();
+
+  // Watch user
+  Stream<List<User>> watchAllUsers() => select(users).watch();
 
   // Add user
   Future insertUser(User user) => into(users).insert(user);
@@ -38,4 +42,9 @@ class AppDatabase extends _$AppDatabase {
 
   // Delete user
   Future deleteUser(User user) => delete(users).delete(user);
+
+  // Search user
+  Future<List<User>> searchedUserList(String searchString) =>
+      (select(users)..where((tbl) => tbl.username.contains(searchString))).get();
+
 }
