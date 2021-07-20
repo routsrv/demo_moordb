@@ -103,8 +103,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                 mail: mailController.text,
                               );
                             }
-
-                            shouldRefreshList.sink.add(true);
                             Navigator.pop(context);
                           },
                           child: Text(

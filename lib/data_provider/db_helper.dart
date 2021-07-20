@@ -1,10 +1,5 @@
-import 'package:rxdart/rxdart.dart';
-
 import 'database_manager.dart';
 import 'service_locator.dart';
-
-
-PublishSubject<bool> shouldRefreshList = PublishSubject<bool>();
 
 void createUser({String username, String mail}) async {
   User user = User(id: null, username: username, mail: mail);

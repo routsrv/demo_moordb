@@ -101,7 +101,6 @@ class _HomeState extends State<Home> {
                                   child: Text('Delete'),
                                   onTap: () async {
                                     await deleteUser(snapshot.data[index]);
-                                    shouldRefreshList.sink.add(true);
                                   }),
                             ),
                           ],
