@@ -4,7 +4,7 @@ A sample project on using of Moor DB in Flutter.
 
 ## Medium Blog
 
-To get a better idea on Moor db please have a look on [this article]().
+To get a better idea on Moor db please have a look on [this article](https://medium.com/mindful-engineering/moor-enhanced-offline-storage-for-flutter-1c43036734ed).
 
 
 # Let us know!
